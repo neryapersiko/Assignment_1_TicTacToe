@@ -9,7 +9,7 @@
     android:layout_height="match_parent"
     android:background="#FFFFFF">
 
-    <!-- סטטוס -->
+    <!-- Status Text -->
     <TextView
         android:id="@+id/statusText"
         android:text="@string/turn_status"
@@ -22,7 +22,7 @@
         android:gravity="center"
         tools:text="Turn: X"/>
 
-    <!-- לוח 3x3 -->
+    <!-- 3x3 Grid Board -->
     <GridLayout
         android:id="@+id/boardGrid"
         android:rowCount="3"
@@ -32,6 +32,7 @@
         android:background="#000000"
         android:padding="4dp">
 
+        <!-- 9 Grid Buttons -->
         <Button android:id="@+id/button0" android:tag="0" android:text=""
             android:backgroundTint="@android:color/white"
             android:insetTop="0dp" android:insetBottom="0dp"
@@ -115,7 +116,7 @@
             tools:ignore="ContentDescription" />
     </GridLayout>
 
-    <!-- כפתור Play Again -->
+    <!-- Play Again Button -->
     <Button
         android:id="@+id/playAgainButton"
         android:text="@string/play_again"
