@@ -5,6 +5,7 @@ import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 
 class MainActivity : AppCompatActivity() {
 
@@ -14,6 +15,13 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var statusText: TextView
     private lateinit var playAgainButton: Button
+    
+    // רשימה של ה-ID של כל הכפתורים בלוח כדי להימנע מ-getIdentifier
+    private val buttonIds = intArrayOf(
+        R.id.button0, R.id.button1, R.id.button2,
+        R.id.button3, R.id.button4, R.id.button5,
+        R.id.button6, R.id.button7, R.id.button8
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -21,6 +29,9 @@ class MainActivity : AppCompatActivity() {
 
         statusText = findViewById(R.id.statusText)
         playAgainButton = findViewById(R.id.playAgainButton)
+
+        // אתחול טקסט הסטטוס עם המשאב הנכון
+        statusText.text = getString(R.string.turn_status, currentPlayer)
 
         playAgainButton.setOnClickListener {
             resetGame()
@@ -39,17 +50,33 @@ class MainActivity : AppCompatActivity() {
         board[index] = currentPlayer
         button.text = currentPlayer
 
+        // שינוי צבע הטקסט של הכפתור לפי השחקן
+        if (currentPlayer == "X") {
+            button.setTextColor(ContextCompat.getColor(this, R.color.playerXColor))
+        } else {
+            button.setTextColor(ContextCompat.getColor(this, R.color.playerOColor))
+        }
+
         if (checkWin(currentPlayer)) {
-            statusText.text = "Player $currentPlayer wins!"
+            statusText.text = getString(R.string.player_wins, currentPlayer)
+            statusText.textSize = 40f // הגדלת הטקסט בסיום
+            if (currentPlayer == "X") {
+                statusText.setTextColor(ContextCompat.getColor(this, R.color.playerXColor))
+            } else {
+                statusText.setTextColor(ContextCompat.getColor(this, R.color.playerOColor))
+            }
             gameActive = false
             playAgainButton.visibility = View.VISIBLE
         } else if (isDraw()) {
-            statusText.text = "It's a draw!"
+            statusText.text = getString(R.string.draw)
+            statusText.textSize = 40f
+            statusText.setTextColor(ContextCompat.getColor(this, R.color.black))
             gameActive = false
             playAgainButton.visibility = View.VISIBLE
         } else {
             currentPlayer = if (currentPlayer == "X") "O" else "X"
-            statusText.text = "Turn: $currentPlayer"
+            statusText.text = getString(R.string.turn_status, currentPlayer)
+            statusText.setTextColor(ContextCompat.getColor(this, R.color.black)) // צבע רגיל בזמן משחק
         }
     }
 
@@ -86,13 +113,16 @@ class MainActivity : AppCompatActivity() {
         board = Array(9) { "" }
         currentPlayer = "X"
         gameActive = true
-        statusText.text = "Turn: $currentPlayer"
+        statusText.text = getString(R.string.turn_status, currentPlayer)
+        statusText.textSize = 28f // החזרת הגודל המקורי
+        statusText.setTextColor(ContextCompat.getColor(this, R.color.black))
         playAgainButton.visibility = View.GONE
 
-        // ניקוי כל הכפתורים
-        for (i in 0..8) {
-            val buttonId = resources.getIdentifier("button$i", "id", packageName)
-            findViewById<Button>(buttonId).text = ""
+        // ניקוי כל הכפתורים באמצעות ה-ID הישירים
+        for (id in buttonIds) {
+            val button = findViewById<Button>(id)
+            button.text = ""
+            button.setTextColor(ContextCompat.getColor(this, R.color.black))
         }
     }
 }
